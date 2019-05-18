@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Advanced Android</string>
+
+    <string name="api_error_repos">Error handling repos</string>
 </resources>
