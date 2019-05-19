@@ -1,5 +1,7 @@
 package com.guess_apps.advancedandroid.data;
 
+import android.util.Log;
+
 import com.guess_apps.advancedandroid.model.Repo;
 
 import java.util.List;
