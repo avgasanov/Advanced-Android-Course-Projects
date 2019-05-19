@@ -24,6 +24,6 @@ public class RepoDetailsController extends BaseController{
 
     @Override
     protected int layoutRes() {
-        return R.layout.scree_repo_details;
+        return R.layout.screen_repo_details;
     }
 }
