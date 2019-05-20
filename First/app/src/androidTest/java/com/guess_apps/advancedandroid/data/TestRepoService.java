@@ -1,5 +1,6 @@
 package com.guess_apps.advancedandroid.data;
 
+import com.guess_apps.advancedandroid.model.Repo;
 import com.guess_apps.advancedandroid.test.TestUtils;
 
 import java.io.IOException;
@@ -28,6 +29,11 @@ public class TestRepoService implements RepoService{
             return Single.just(response);
         }
         return Single.error(new IOException());
+    }
+
+    @Override
+    public Single<Repo> getRepo(String repoOwner, String repoName) {
+        return null;
     }
 
     public void setSendError(boolean sendError) {
