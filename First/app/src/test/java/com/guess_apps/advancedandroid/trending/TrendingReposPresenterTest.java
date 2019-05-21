@@ -5,6 +5,7 @@ import com.guess_apps.advancedandroid.data.RepoRequester;
 import com.guess_apps.advancedandroid.data.TrendingReposResponse;
 import com.guess_apps.advancedandroid.model.Repo;
 import com.guess_apps.advancedandroid.testutils.TestUtils;
+import com.guess_apps.advancedandroid.ui.ScreenNavigator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,12 +27,12 @@ import static org.mockito.Mockito.when;
 
 public class TrendingReposPresenterTest {
 
-    @Mock
-    RepoRepository repoRepository;
+    @Mock RepoRepository repoRepository;
     @Mock TrendingReposViewModel viewModel;
     @Mock Consumer<Throwable> onErrorConsumer;
     @Mock Consumer<List<Repo>> onSuccessConsumer;
     @Mock Consumer<Boolean> loadingConsumer;
+    @Mock ScreenNavigator screenNavigator;
 
     TrendingReposPresenter trendingReposPresenter;
 
@@ -84,7 +85,12 @@ public class TrendingReposPresenterTest {
 
     @Test
     public void onRepoClicked() {
-        // TODO
+        Repo repo = TestUtils.loadJson("mock/get_repo.json", Repo.class);
+        setUpSuccess();
+        initializePresenter();
+        trendingReposPresenter.onRepoClicked(repo);
+
+        verify(screenNavigator).goToRepoDetails(repo.owner().login(), repo.name());
     }
 
     private List<Repo> setUpSuccess() {
@@ -104,6 +110,6 @@ public class TrendingReposPresenterTest {
     }
 
     private void initializePresenter() {
-        trendingReposPresenter = new TrendingReposPresenter(viewModel, repoRepository);
+        trendingReposPresenter = new TrendingReposPresenter(viewModel, repoRepository, screenNavigator);
     }
 }
