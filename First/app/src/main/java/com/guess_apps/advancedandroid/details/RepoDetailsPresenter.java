@@ -22,11 +22,11 @@ public class RepoDetailsPresenter {
             RepoRepository repoRepository,
             RepoDetailsViewModel viewModel) {
         repoRepository.getRepo(repoOwner, repoName)
-               .doOnSuccess((Consumer<? super Repo>) viewModel.processRepo())
-               .doOnError((Consumer<? super Throwable>) viewModel.detailsError())
+               .doOnSuccess(viewModel.processRepo())
+               .doOnError(viewModel.detailsError())
                .flatMap(repo -> repoRepository.getContributors(repo.contributorsUrl())
-                .doOnError((Consumer<? super Throwable>) viewModel.contributorsError()))
-                .subscribe((Consumer<? super List<Contributor>>) viewModel.processContributors(), throwable -> {
+                .doOnError(viewModel.contributorsError()))
+                .subscribe(viewModel.processContributors(), throwable -> {
                     // We handle logging in the view model
                 });
     }

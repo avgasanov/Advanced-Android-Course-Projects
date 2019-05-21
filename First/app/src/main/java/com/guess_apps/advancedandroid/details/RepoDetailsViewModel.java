@@ -10,7 +10,7 @@ import com.jakewharton.rxrelay2.BehaviorRelay;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.List;
-import java.util.function.Consumer;
+import io.reactivex.functions.Consumer;
 
 import javax.inject.Inject;
 
