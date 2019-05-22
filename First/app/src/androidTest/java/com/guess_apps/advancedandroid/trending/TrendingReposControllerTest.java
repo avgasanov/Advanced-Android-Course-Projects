@@ -33,7 +33,7 @@ public class TrendingReposControllerTest extends ControllerTest{
 
     @Test
     public void loadRepos() {
-        repoService.setSendError(false);
+        repoService.clearErrorFlags();
         launch();
 
         onView(withId(R.id.loading_indicator)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
@@ -45,7 +45,7 @@ public class TrendingReposControllerTest extends ControllerTest{
 
     @Test
     public void loadReposError() {
-        repoService.setSendError(true);
+        repoService.setErrorFlags(TestRepoService.FLAG_TRENDING_REPOS);
         launch();
 
         onView(withId(R.id.loading_indicator)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
