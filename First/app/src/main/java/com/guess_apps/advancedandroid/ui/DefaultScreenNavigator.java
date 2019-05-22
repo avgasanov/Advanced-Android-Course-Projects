@@ -9,7 +9,6 @@ import com.guess_apps.advancedandroid.di.ActivityScope;
 
 import javax.inject.Inject;
 
-@ActivityScope
 public class DefaultScreenNavigator implements ScreenNavigator {
 
     private Router router;
