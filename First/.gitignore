@@ -11,3 +11,5 @@
 /build
 /captures
 .externalNativeBuild
+/src/androidTest/resources/mock
+/src/test/resources/mock
