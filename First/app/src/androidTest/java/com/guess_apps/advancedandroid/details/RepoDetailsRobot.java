@@ -30,7 +30,7 @@ class RepoDetailsRobot {
         return this;
     }
 
-    RepoDetailsRobot verifyDescription(String createdDate) {
+    RepoDetailsRobot verifyCreatedDate(String createdDate) {
         onView(withId(R.id.tv_creation_date)).check(matches(withText(createdDate)));
         return this;
     }
