@@ -15,9 +15,11 @@ import com.bluelinelabs.conductor.Router;
 import com.guess_apps.advancedandroid.R;
 import com.guess_apps.advancedandroid.di.Injector;
 import com.guess_apps.advancedandroid.di.ScreenInjector;
+import com.guess_apps.advancedandroid.lifecycle.ActivityLifeCycleTask;
 import com.guess_apps.advancedandroid.ui.ActivityViewInterceptor;
 import com.guess_apps.advancedandroid.ui.ScreenNavigator;
 
+import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -29,6 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Inject ScreenInjector screenInjector;
     @Inject ScreenNavigator screenNavigator;
     @Inject ActivityViewInterceptor activityViewInterceptor;
+    @Inject Set<ActivityLifeCycleTask> activityLifeCycleTasks;
 
     private String instanceId;
     private Router router;
@@ -51,13 +54,48 @@ public abstract class BaseActivity extends AppCompatActivity {
         router = Conductor.attachRouter(this, screenContainer, savedInstanceState);
         screenNavigator.initWithRouter(router, initialScreen());
         monitorBackStart();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onCreate(this);
+        }
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onStart(this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onResume(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onPause(this);
+        }
     }
 
     @Override
     public void onBackPressed() {
         if (!screenNavigator.pop()) {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onStop(this);
         }
     }
 
@@ -84,6 +122,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             Injector.clearComponent(this);
         }
         activityViewInterceptor.clear();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onDestroy(this);
+        }
     }
 
     public ScreenInjector getScreenInjector() {
