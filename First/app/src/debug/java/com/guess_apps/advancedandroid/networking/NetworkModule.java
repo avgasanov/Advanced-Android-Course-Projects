@@ -13,8 +13,8 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    static Call.Factory provideOkHttp() {
-        return new OkHttpClient.Builder().build();
+    static Call.Factory provideOkHttp(MockInterceptor mockInterceptor) {
+        return new OkHttpClient.Builder().addInterceptor(mockInterceptor).build();
     }
 
     @Provides

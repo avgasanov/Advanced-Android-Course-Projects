@@ -73,7 +73,7 @@ def mockCopySpec = copySpec {
 }
 
 task copyMock(type: Copy) {
-    ['src/test/resources', 'src/androidTest/resources'].each {
+    ['src/debug/assets', 'src/test/resources', 'src/androidTest/resources'].each {
         dest ->
             copy {
                 with mockCopySpec
