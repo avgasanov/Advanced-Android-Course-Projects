@@ -1,5 +1,6 @@
 package com.guess_apps.advancedandroid.details;
 
+import com.guess_apps.advancedandroid.base.ScreenModule;
 import com.guess_apps.advancedandroid.di.ScreenScope;
 
 import javax.inject.Named;
@@ -9,7 +10,9 @@ import dagger.Subcomponent;
 import dagger.android.AndroidInjector;
 
 @ScreenScope
-@Subcomponent
+@Subcomponent(modules = {
+        ScreenModule.class,
+})
 public interface RepoDetailsComponent extends AndroidInjector<RepoDetailsController>{
 
     @Subcomponent.Builder
