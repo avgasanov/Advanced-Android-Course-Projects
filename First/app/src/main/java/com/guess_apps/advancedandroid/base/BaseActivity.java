@@ -15,20 +15,24 @@ import com.bluelinelabs.conductor.Router;
 import com.guess_apps.advancedandroid.R;
 import com.guess_apps.advancedandroid.di.Injector;
 import com.guess_apps.advancedandroid.di.ScreenInjector;
+import com.guess_apps.advancedandroid.lifecycle.ActivityLifeCycleTask;
 import com.guess_apps.advancedandroid.ui.ActivityViewInterceptor;
+import com.guess_apps.advancedandroid.ui.RouterProvider;
 import com.guess_apps.advancedandroid.ui.ScreenNavigator;
 
+import java.util.Set;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements RouterProvider{
 
     private static String INSTANCE_ID_KEY = "instance_id";
 
     @Inject ScreenInjector screenInjector;
     @Inject ScreenNavigator screenNavigator;
     @Inject ActivityViewInterceptor activityViewInterceptor;
+    @Inject Set<ActivityLifeCycleTask> activityLifeCycleTasks;
 
     private String instanceId;
     private Router router;
@@ -49,9 +53,35 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         router = Conductor.attachRouter(this, screenContainer, savedInstanceState);
-        screenNavigator.initWithRouter(router, initialScreen());
         monitorBackStart();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onCreate(this);
+        }
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onStart(this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onResume(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onPause(this);
+        }
     }
 
     @Override
@@ -61,10 +91,23 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public Router getRouter() {
+        return router;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onStop(this);
+        }
+    }
+
     @LayoutRes
     protected abstract int layoutRes();
 
-    protected abstract Controller initialScreen();
+    public abstract Controller initialScreen();
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -79,11 +122,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        screenNavigator.clear();
         if (isFinishing()) {
             Injector.clearComponent(this);
         }
         activityViewInterceptor.clear();
+        for(ActivityLifeCycleTask task : activityLifeCycleTasks) {
+            task.onDestroy(this);
+        }
     }
 
     public ScreenInjector getScreenInjector() {

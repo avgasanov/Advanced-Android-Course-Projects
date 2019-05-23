@@ -1,6 +1,7 @@
 package com.guess_apps.advancedandroid.details;
 
 import com.guess_apps.advancedandroid.data.RepoRepository;
+import com.guess_apps.advancedandroid.lifecycle.DisposableManager;
 import com.guess_apps.advancedandroid.model.Contributor;
 import com.guess_apps.advancedandroid.model.Repo;
 import com.guess_apps.advancedandroid.testutils.TestUtils;
@@ -9,6 +10,7 @@ import com.squareup.moshi.Types;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
@@ -86,6 +88,6 @@ public class RepoDetailsPresenterTest {
     }
 
     private void initPresenter() {
-        new RepoDetailsPresenter(OWNER, NAME, repoRepository, viewModel);
+        new RepoDetailsPresenter(OWNER, NAME, repoRepository, viewModel, Mockito.mock(DisposableManager.class));
     }
 }
