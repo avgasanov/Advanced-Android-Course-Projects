@@ -3,6 +3,7 @@ package com.guess_apps.advancedandroid.trending;
 import com.guess_apps.advancedandroid.data.RepoRepository;
 import com.guess_apps.advancedandroid.data.RepoRequester;
 import com.guess_apps.advancedandroid.data.TrendingReposResponse;
+import com.guess_apps.advancedandroid.lifecycle.DisposableManager;
 import com.guess_apps.advancedandroid.model.Repo;
 import com.guess_apps.advancedandroid.testutils.TestUtils;
 import com.guess_apps.advancedandroid.ui.ScreenNavigator;
@@ -110,6 +111,6 @@ public class TrendingReposPresenterTest {
     }
 
     private void initializePresenter() {
-        trendingReposPresenter = new TrendingReposPresenter(viewModel, repoRepository, screenNavigator);
+        trendingReposPresenter = new TrendingReposPresenter(viewModel, repoRepository, screenNavigator, Mockito.mock(DisposableManager.class));
     }
 }
