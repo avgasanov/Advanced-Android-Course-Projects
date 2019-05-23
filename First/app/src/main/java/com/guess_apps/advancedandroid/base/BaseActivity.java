@@ -15,6 +15,7 @@ import com.bluelinelabs.conductor.Router;
 import com.guess_apps.advancedandroid.R;
 import com.guess_apps.advancedandroid.di.Injector;
 import com.guess_apps.advancedandroid.di.ScreenInjector;
+import com.guess_apps.advancedandroid.ui.ActivityViewInterceptor;
 import com.guess_apps.advancedandroid.ui.ScreenNavigator;
 
 import java.util.UUID;
@@ -27,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Inject ScreenInjector screenInjector;
     @Inject ScreenNavigator screenNavigator;
+    @Inject ActivityViewInterceptor activityViewInterceptor;
 
     private String instanceId;
     private Router router;
@@ -39,8 +41,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             instanceId = UUID.randomUUID().toString();
         }
         Injector.inject(this);
-        setContentView(layoutRes());
 
+        activityViewInterceptor.setContentView(this, layoutRes());
         ViewGroup screenContainer = findViewById(R.id.screen_container);
         if(screenContainer == null) {
             throw new NullPointerException("Activity must have a view with id: screen_container");
@@ -81,6 +83,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (isFinishing()) {
             Injector.clearComponent(this);
         }
+        activityViewInterceptor.clear();
     }
 
     public ScreenInjector getScreenInjector() {

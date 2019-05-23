@@ -6,6 +6,7 @@ import com.guess_apps.advancedandroid.data.TestRepoServiceModule;
 import com.guess_apps.advancedandroid.networking.ServiceModule;
 import com.guess_apps.advancedandroid.trending.TrendingReposControllerTest;
 import com.guess_apps.advancedandroid.ui.NavigationModule;
+import com.guess_apps.advancedandroid.ui.TestActivityViewIntercepterModule;
 import com.guess_apps.advancedandroid.ui.TestNavigationModule;
 import com.guess_apps.advancedandroid.ui.TestScreenNavigator;
 
@@ -20,6 +21,7 @@ import dagger.Component;
         TestRepoServiceModule.class,
         ServiceModule.class,
         TestNavigationModule.class,
+        TestActivityViewIntercepterModule.class,
 })
 public interface TestApplicationComponent extends ApplicationComponent{
 
