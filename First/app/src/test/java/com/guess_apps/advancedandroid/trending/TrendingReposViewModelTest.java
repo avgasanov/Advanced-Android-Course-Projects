@@ -25,7 +25,7 @@ public class TrendingReposViewModelTest {
     }
 
     @Test
-    public void loading() throws Exception{
+    public void loading() throws Exception {
         TestObserver<Boolean> loadingObserver = viewModel.loading().test();
         viewModel.loadingUpdated().accept(true);
         viewModel.loadingUpdated().accept(false);
@@ -34,18 +34,10 @@ public class TrendingReposViewModelTest {
     }
 
     @Test
-    public void repos() throws Exception{
-        TrendingReposResponse response = TestUtils.loadJson("mock/search/get_trending_repos.json", TrendingReposResponse.class);
-        viewModel.reposUpdated().accept(response.repos());
-
-        viewModel.repos().test().assertValue(response.repos());
-    }
-
-    @Test
-    public void error() throws Exception{
+    public void error() throws Exception {
         TestObserver<Integer> errorObserver = viewModel.error().test();
         viewModel.onError().accept(new IOException());
-        viewModel.reposUpdated().accept(Collections.emptyList());
+        viewModel.reposUpdated().run();
 
         errorObserver.assertValues(R.string.api_error_repos, -1);
     }

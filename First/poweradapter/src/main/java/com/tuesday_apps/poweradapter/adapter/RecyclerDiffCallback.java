@@ -1,19 +1,16 @@
-package com.guess_apps.advancedandroid.trending;
+package com.tuesday_apps.poweradapter.adapter;
 
 import android.support.v7.util.DiffUtil;
 
-import com.guess_apps.advancedandroid.model.Repo;
+import com.tuesday_apps.poweradapter.item.RecyclerItem;
 
 import java.util.List;
 
+public class RecyclerDiffCallback extends DiffUtil.Callback{
+    private final List<? extends RecyclerItem> oldList;
+    private final List<? extends RecyclerItem> newList;
 
-
-public class RepoDiffCallback extends DiffUtil.Callback {
-
-    private final List<Repo> oldList;
-    private final List<Repo> newList;
-
-    public RepoDiffCallback(List<Repo> oldList, List<Repo> newList) {
+    RecyclerDiffCallback(List<? extends RecyclerItem> oldList, List<? extends RecyclerItem> newList) {
         this.oldList = oldList;
         this.newList = newList;
     }
@@ -30,7 +27,7 @@ public class RepoDiffCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        return oldList.get(oldItemPosition).id() == newList.get(newItemPosition).id();
+        return oldList.get(oldItemPosition).getId() == newList.get(newItemPosition).getId();
     }
 
     @Override

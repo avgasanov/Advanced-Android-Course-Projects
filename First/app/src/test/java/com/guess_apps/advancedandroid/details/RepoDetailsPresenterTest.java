@@ -6,6 +6,7 @@ import com.guess_apps.advancedandroid.model.Contributor;
 import com.guess_apps.advancedandroid.model.Repo;
 import com.guess_apps.advancedandroid.testutils.TestUtils;
 import com.squareup.moshi.Types;
+import com.tuesday_apps.poweradapter.adapter.RecyclerDataSource;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,9 @@ import java.io.IOException;
 import java.util.List;
 
 import io.reactivex.Single;
+import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
@@ -25,33 +28,37 @@ import static org.mockito.Mockito.when;
 
 public class RepoDetailsPresenterTest {
 
+    static {
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler(schedulerCallable -> Schedulers.trampoline());
+    }
+
     private static final String OWNER = "owner";
     private static final String NAME = "name";
 
     @Mock RepoRepository repoRepository;
     @Mock RepoDetailsViewModel viewModel;
-
     @Mock Consumer<Repo> repoConsumer;
-    @Mock Consumer<List<Contributor>> contributorConsumer;
+    @Mock Consumer<Object> contributorConsumer;
     @Mock Consumer<Throwable> detailErrorConsumer;
     @Mock Consumer<Throwable> contributorErrorConsumer;
+    @Mock RecyclerDataSource dataSource;
 
     private Repo repo = TestUtils.loadJson("mock/repos/get_repo.json", Repo.class);
     private List<Contributor> contributors = TestUtils.loadJson("mock/repos/contributors/get_contributors.json",
             Types.newParameterizedType(List.class, Contributor.class));
-    private String contributorUrl = repo.contributorsUrl();
+    private String contributorsUrl = repo.contributorsUrl();
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         when(viewModel.processRepo()).thenReturn(repoConsumer);
-        when(viewModel.processContributors()).thenReturn(contributorConsumer);
+        when(viewModel.contributorsLoaded()).thenReturn(contributorConsumer);
         when(viewModel.detailsError()).thenReturn(detailErrorConsumer);
         when(viewModel.contributorsError()).thenReturn(contributorErrorConsumer);
 
         when(repoRepository.getRepo(OWNER, NAME)).thenReturn(Single.just(repo));
-        when(repoRepository.getContributors(contributorUrl)).thenReturn(Single.just(contributors));
+        when(repoRepository.getContributors(contributorsUrl)).thenReturn(Single.just(contributors));
     }
 
     @Test
@@ -74,20 +81,22 @@ public class RepoDetailsPresenterTest {
     public void repoContributors() throws Exception {
         initPresenter();
 
-        verify(contributorConsumer).accept(contributors);
+        verify(dataSource).setData(contributors);
     }
 
     @Test
     public void repoContributorsError() throws Exception {
         Throwable t = new IOException();
-        when(repoRepository.getContributors(contributorUrl)).thenReturn(Single.error(t));
+        when(repoRepository.getContributors(contributorsUrl)).thenReturn(Single.error(t));
         initPresenter();
 
         verify(contributorErrorConsumer).accept(t);
+        // Verify that our repo details were still processed even though the contributors failed to load
         verify(repoConsumer).accept(repo);
     }
 
     private void initPresenter() {
-        new RepoDetailsPresenter(OWNER, NAME, repoRepository, viewModel, Mockito.mock(DisposableManager.class));
+        new RepoDetailsPresenter(
+                OWNER, NAME, repoRepository, viewModel, Mockito.mock(DisposableManager.class), dataSource);
     }
 }

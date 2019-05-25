@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.guess_apps.advancedandroid.R;
 
 import com.guess_apps.advancedandroid.base.BaseController;
+import com.tuesday_apps.poweradapter.adapter.RecyclerAdapter;
+import com.tuesday_apps.poweradapter.adapter.RecyclerDataSource;
 
 import javax.inject.Inject;
 
@@ -22,6 +24,7 @@ public class TrendingReposController extends BaseController {
 
     @Inject TrendingReposPresenter presenter;
     @Inject TrendingReposViewModel viewModel;
+    @Inject RecyclerDataSource dataSource;
 
     @BindView(R.id.repo_list) RecyclerView repoList;
     @BindView(R.id.loading_indicator) View loadingView;
@@ -30,7 +33,7 @@ public class TrendingReposController extends BaseController {
     @Override
     protected void onViewBound(View view) {
         repoList.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        repoList.setAdapter(new RepoAdapter(presenter));
+        repoList.setAdapter(new RecyclerAdapter(dataSource));
     }
 
     @Override
@@ -43,9 +46,6 @@ public class TrendingReposController extends BaseController {
                         repoList.setVisibility(loading ? View.GONE : View.VISIBLE);
                         errorText.setVisibility(loading ? View.GONE : View.VISIBLE);
                 }),
-                viewModel.repos()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(((RepoAdapter) repoList.getAdapter())::setData), // TODO
                 viewModel.error()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(errorRes -> {
