@@ -2,6 +2,7 @@ package com.tuesday_apps.poweradapter.adapter;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MainThread;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 
@@ -59,5 +60,11 @@ public class RecyclerDataSource {
 
     void attachToAdapter(RecyclerView.Adapter adapter) {
         adapterReference = new WeakReference<>(adapter);
+    }
+
+    @VisibleForTesting
+    void seedData(List<RecyclerItem> data) {
+        this.data.clear();
+        this.data.addAll(data);
     }
 }
