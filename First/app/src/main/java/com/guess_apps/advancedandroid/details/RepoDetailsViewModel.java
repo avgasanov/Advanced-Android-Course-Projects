@@ -53,12 +53,11 @@ public class RepoDetailsViewModel {
         };
     }
 
-    Consumer<List<Contributor>> processContributors() {
-        return contributors -> {
+    Consumer<Object> contributorsLoaded() {
+        return __ -> {
             contributorStateRelay.accept(
                     ContributorState.builder()
                     .loading(false)
-                    .contributors(contributors)
                     .build()
             );
         };

@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.bluelinelabs.conductor.Controller;
 import com.guess_apps.advancedandroid.base.BaseController;
 import com.guess_apps.advancedandroid.R;
+import com.tuesday_apps.poweradapter.adapter.RecyclerAdapter;
+import com.tuesday_apps.poweradapter.adapter.RecyclerDataSource;
 
 import javax.inject.Inject;
 
@@ -30,6 +32,7 @@ public class RepoDetailsController extends BaseController{
 
     @Inject RepoDetailsViewModel viewModel;
     @Inject RepoDetailsPresenter presenter;
+    @Inject RecyclerDataSource contributorDataSource;
 
     @BindView(R.id.tv_repo_name) TextView repoNameText;
     @BindView(R.id.tv_repo_description) TextView repoDescriptionText;
@@ -49,7 +52,7 @@ public class RepoDetailsController extends BaseController{
     @Override
     protected void onViewBound(View view) {
         contributorList.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        contributorList.setAdapter(new ContributorAdapter());
+        contributorList.setAdapter(new RecyclerAdapter(contributorDataSource));
     }
 
     @Override
@@ -92,7 +95,6 @@ public class RepoDetailsController extends BaseController{
                     contributorsErrorText.setVisibility(contributorDetails.isSuccess() ? View.GONE : View.VISIBLE);
                     if(contributorDetails.isSuccess()) {
                         contributorsErrorText.setText(null);
-                        ((ContributorAdapter) contributorList.getAdapter()).setData(contributorDetails.contributors());
                     } else {
                         contributorsErrorText.setText(contributorDetails.errorRes());
                     }
